@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Characters of Ice and Fire</string>
+    <string name="Unaligned">Unaligned.</string>
+    <string name="ExampleText">Example Text Here.</string>
+    <string name="ExampleTextLong">Example Text Here. Example Text Here. Example Text Here.
+        Example Text Here. Example Text Here. Example Text Here. </string>
+    <string name="Gender">Gender:</string>
+    <string name="Culture">Culture:</string>
+    <string name="Born">Born:</string>
+    <string name="Died">Died:</string>
+    <string name="Titles">Titles:</string>
+    <string name="Aliases">Aliases:</string>
+    <string name="Father">Father:</string>
+    <string name="Mother">Mother:</string>
+    <string name="Spouse">Spouse:</string>
+    <string name="Allegiances">Allegiances:</string>
+    <string name="Books">Books Appeared In:</string>
+    <string name="TVSeasons">TV Seasons Appeared In:</string>
+    <string name="PlayedBy">Portrayed By:</string>
+    <string name="LoadingCharacters">Loading Characters</string>
+
+</resources>
