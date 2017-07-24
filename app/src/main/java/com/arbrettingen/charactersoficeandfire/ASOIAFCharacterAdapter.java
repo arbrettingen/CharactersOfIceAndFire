@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * ASOIAFCharacterAdapter populates the Main ListView with relevant row views containing view data
@@ -18,17 +19,17 @@ import java.util.ArrayList;
 
 public class ASOIAFCharacterAdapter extends ArrayAdapter {
 
-    Context mContext;
-    int mLayoutResourceId;
-    ArrayList<ASOIAFCharacter> mData = null;
-    String[] houseRegions;
+    private Context mContext;
+    private int mLayoutResourceId;
+    private ArrayList<ASOIAFCharacter> mData = null;
+    private HashMap<String, String> mHouseUrlToRegionDictionary;
 
-    public ASOIAFCharacterAdapter(Context context, int resource, ArrayList<ASOIAFCharacter> data, String[] houseRegions) {
+    public ASOIAFCharacterAdapter(Context context, int resource, ArrayList<ASOIAFCharacter> data, HashMap<String, String> houseUrlToRegionDictionary) {
         super(context, resource, data);
         this.mContext = context;
         this.mLayoutResourceId = resource;
         this.mData = data;
-        this.houseRegions = houseRegions;
+        this.mHouseUrlToRegionDictionary = houseUrlToRegionDictionary;
     }
 
     @Override
@@ -69,36 +70,34 @@ public class ASOIAFCharacterAdapter extends ArrayAdapter {
         if (mData.get(position).getmAllegiances().size() > 0) {
             for (String houseUrl : mData.get(position).getmAllegiances()) {
 
-                int housePosition = Integer.parseInt(houseUrl.substring(45)) - 1;
-
-                if (houseRegions[housePosition].equals("The Vale")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The Vale")) {
                     mainAllegiance = "arryn";
                 }
-                if (houseRegions[housePosition].equals("The Stormlands")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The Stormlands")) {
                     mainAllegiance = "baratheon";
                 }
-                if (houseRegions[housePosition].equals("Iron Islands")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("Iron Islands")) {
                     mainAllegiance = "greyjoy";
                 }
-                if (houseRegions[housePosition].equals("The Westerlands")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The Westerlands")) {
                     mainAllegiance = "lannister";
                 }
-                if (houseRegions[housePosition].equals("Dorne")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("Dorne")) {
                     mainAllegiance = "martell";
                 }
-                if (houseRegions[housePosition].equals("The North")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The North")) {
                     mainAllegiance = "stark";
                 }
-                if (houseRegions[housePosition].equals("The Crownlands")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The Crownlands")) {
                     mainAllegiance = "targaryen";
                 }
-                if (houseRegions[housePosition].equals("The Riverlands")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The Riverlands")) {
                     mainAllegiance = "tully";
                 }
-                if (houseRegions[housePosition].equals("The Reach")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The Reach")) {
                     mainAllegiance = "tyrell";
                 }
-                if (houseRegions[housePosition].equals("The Neck")) {
+                if (mHouseUrlToRegionDictionary.get(houseUrl).equals("The Neck")) {
                     mainAllegiance = "tully";
                 }
 

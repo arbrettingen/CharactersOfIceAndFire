@@ -49,6 +49,25 @@ public class ASOIAFCharacter implements Comparable<ASOIAFCharacter> {
         mPlayedBy = playedBy;
     }
 
+    public ASOIAFCharacter(String url, String name, ArrayList<String> aliases,
+                           ArrayList<String> allegiances){
+        mUrl = url;
+        mName = name;
+        mGender = "";
+        mCulture = "";
+        mYearBorn = "";
+        mYearDied = "";
+        mTitles = new ArrayList<>();
+        mAliases = aliases;
+        mFather = "";
+        mMother = "";
+        mSpouse = "";
+        mAllegiances = allegiances;
+        mBooks = new ArrayList<>();
+        mTVSeasons = new ArrayList<>();
+        mPlayedBy = new ArrayList<>();
+    }
+
     public String getmUrl() {
         return mUrl;
     }
@@ -168,6 +187,7 @@ public class ASOIAFCharacter implements Comparable<ASOIAFCharacter> {
     public void setmPlayedBy(ArrayList<String> mPlayedBy) {
         this.mPlayedBy = mPlayedBy;
     }
+
 
     @Override
     public int compareTo(@NonNull ASOIAFCharacter asoiafCharacter) {
