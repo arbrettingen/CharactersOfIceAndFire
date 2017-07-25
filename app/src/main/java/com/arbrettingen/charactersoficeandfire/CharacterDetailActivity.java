@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,35 +34,6 @@ public class CharacterDetailActivity extends AppCompatActivity {
     private String mother;
     private String spouse;
 
-    //views
-    private LinearLayout mParentLayout;
-    private TextView mNameText;
-    private TextView mGenderText;
-    private LinearLayout mAllegiancesLayout;
-    private TextView mAllegiancesText;
-    private LinearLayout mAliasesLayout;
-    private TextView mAliasesText;
-    private LinearLayout mBornLayout;
-    private TextView mBornText;
-    private LinearLayout mDiedLayout;
-    private TextView mDiedText;
-    private LinearLayout mTitlesLayout;
-    private TextView mTitlesText;
-    private LinearLayout mFatherLayout;
-    private TextView mFatherText;
-    private LinearLayout mMotherLayout;
-    private TextView mMotherText;
-    private LinearLayout mSpouseLayout;
-    private TextView mSpouseText;
-    private LinearLayout mCultureLayout;
-    private TextView mCultureText;
-    private LinearLayout mBooksLayout;
-    private TextView mBooksText;
-    private LinearLayout mSeasonsLayout;
-    private TextView mSeasonsText;
-    private LinearLayout mPlayedByLayout;
-    private TextView mPlayedByText;
-
     private HashMap<String, String> mUrlToCharacterNameDictionary = new HashMap<>();
     private HashMap<String, String> mUrlToBookNamesDictionary = new HashMap<>();
     private HashMap<String, String> mUrlToHouseNamesDictionary = new HashMap<>();
@@ -78,10 +48,6 @@ public class CharacterDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_character_detail);
 
         Intent thisIntent = getIntent();
-
-        for (String key : thisIntent.getExtras().keySet()) {
-            Object o = thisIntent.getExtras().get(key);
-        }
 
         if (thisIntent.hasExtra("House URL to Region")){
             mHouseUrlToRegionDictionary = (HashMap<String, String>) thisIntent.getExtras().get("House URL to Region");
@@ -102,33 +68,6 @@ public class CharacterDetailActivity extends AppCompatActivity {
             AOIAFCharacterDetailAsyncTask characterDetailTask = new AOIAFCharacterDetailAsyncTask(getApplicationContext(),
                     charUrl , mHouseUrlToRegionDictionary,
                     mUrlToHouseNamesDictionary, mUrlToBookNamesDictionary) {
-                @Override
-                public void onResponseReceived(ASOIAFCharacter result) {
-                    mCharacter = result;
-                    if (mCharacter == null) {
-                        Intent i = new Intent(getApplicationContext(), MainListActivity.class);
-                        startActivity(i);
-                    }
-                    //any family data stored is currently in url format, must convert to actual names
-                    if (mCharacter.getmFather() != null && !mCharacter.getmFather().equals("")) {
-                        if (mUrlToCharacterNameDictionary.containsKey(mCharacter.getmFather())) {
-                            father = mUrlToCharacterNameDictionary.get(mCharacter.getmFather());
-                        }
-                    }
-                    if (mCharacter.getmMother() != null && !mCharacter.getmMother().equals("")) {
-                        if (mUrlToCharacterNameDictionary.containsKey(mCharacter.getmMother())) {
-                            mother = mUrlToCharacterNameDictionary.get(mCharacter.getmMother());
-                        }
-                    }
-                    if (mCharacter.getmSpouse() != null && !mCharacter.getmSpouse().equals("")) {
-                        if (mUrlToCharacterNameDictionary.containsKey(mCharacter.getmSpouse())) {
-                            spouse = mUrlToCharacterNameDictionary.get(mCharacter.getmSpouse());
-                        }
-                    }
-
-                    updateUi();
-
-                }
             };
             characterDetailTask.execute();
         }
@@ -137,35 +76,35 @@ public class CharacterDetailActivity extends AppCompatActivity {
     private void updateUi() {
 
         //initialize views
-        mParentLayout = (LinearLayout) findViewById(R.id.detail_parent_layout);
+        LinearLayout mParentLayout = (LinearLayout) findViewById(R.id.detail_parent_layout);
         mParentLayout.setVisibility(View.VISIBLE);
 
-        mNameText = (TextView) findViewById(R.id.detail_name_text);
-        mGenderText = (TextView) findViewById(R.id.detail_gender_txt);
-        mAllegiancesLayout = (LinearLayout) findViewById(R.id.detail_allegiances_layout);
-        mAllegiancesText = (TextView) findViewById(R.id.detail_allegiances_text);
-        mAliasesLayout = (LinearLayout) findViewById(R.id.detail_alias_layout);
-        mAliasesText = (TextView) findViewById(R.id.detail_alias_text);
-        mBornLayout = (LinearLayout) findViewById(R.id.detail_born_layout);
-        mBornText = (TextView) findViewById(R.id.detail_born_text);
-        mDiedLayout = (LinearLayout) findViewById(R.id.detail_died_layout);
-        mDiedText = (TextView) findViewById(R.id.detail_died_text);
-        mTitlesLayout = (LinearLayout) findViewById(R.id.detail_titles_layout);
-        mTitlesText = (TextView) findViewById(R.id.detail_titles_text);
-        mFatherLayout = (LinearLayout) findViewById(R.id.detail_father_layout);
-        mFatherText = (TextView) findViewById(R.id.detail_father_text);
-        mMotherLayout = (LinearLayout) findViewById(R.id.detail_mother_layout);
-        mMotherText = (TextView) findViewById(R.id.detail_mother_text);
-        mSpouseLayout = (LinearLayout) findViewById(R.id.detail_spouse_layout);
-        mSpouseText = (TextView) findViewById(R.id.detail_spouse_text);
-        mCultureLayout = (LinearLayout) findViewById(R.id.detail_culture_layout);
-        mCultureText = (TextView) findViewById(R.id.detail_culture_text);
-        mBooksLayout = (LinearLayout) findViewById(R.id.detail_books_layout);
-        mBooksText = (TextView) findViewById(R.id.detail_books_text);
-        mSeasonsLayout = (LinearLayout) findViewById(R.id.detail_seasons_layout);
-        mSeasonsText = (TextView) findViewById(R.id.detail_seasons_text);
-        mPlayedByLayout = (LinearLayout) findViewById(R.id.detail_played_layout);
-        mPlayedByText = (TextView) findViewById(R.id.detail_played_text);
+        TextView mNameText = (TextView) findViewById(R.id.detail_name_text);
+        TextView mGenderText = (TextView) findViewById(R.id.detail_gender_txt);
+        LinearLayout mAllegiancesLayout = (LinearLayout) findViewById(R.id.detail_allegiances_layout);
+        TextView mAllegiancesText = (TextView) findViewById(R.id.detail_allegiances_text);
+        LinearLayout mAliasesLayout = (LinearLayout) findViewById(R.id.detail_alias_layout);
+        TextView mAliasesText = (TextView) findViewById(R.id.detail_alias_text);
+        LinearLayout mBornLayout = (LinearLayout) findViewById(R.id.detail_born_layout);
+        TextView mBornText = (TextView) findViewById(R.id.detail_born_text);
+        LinearLayout mDiedLayout = (LinearLayout) findViewById(R.id.detail_died_layout);
+        TextView mDiedText = (TextView) findViewById(R.id.detail_died_text);
+        LinearLayout mTitlesLayout = (LinearLayout) findViewById(R.id.detail_titles_layout);
+        TextView mTitlesText = (TextView) findViewById(R.id.detail_titles_text);
+        LinearLayout mFatherLayout = (LinearLayout) findViewById(R.id.detail_father_layout);
+        TextView mFatherText = (TextView) findViewById(R.id.detail_father_text);
+        LinearLayout mMotherLayout = (LinearLayout) findViewById(R.id.detail_mother_layout);
+        TextView mMotherText = (TextView) findViewById(R.id.detail_mother_text);
+        LinearLayout mSpouseLayout = (LinearLayout) findViewById(R.id.detail_spouse_layout);
+        TextView mSpouseText = (TextView) findViewById(R.id.detail_spouse_text);
+        LinearLayout mCultureLayout = (LinearLayout) findViewById(R.id.detail_culture_layout);
+        TextView mCultureText = (TextView) findViewById(R.id.detail_culture_text);
+        LinearLayout mBooksLayout = (LinearLayout) findViewById(R.id.detail_books_layout);
+        TextView mBooksText = (TextView) findViewById(R.id.detail_books_text);
+        LinearLayout mSeasonsLayout = (LinearLayout) findViewById(R.id.detail_seasons_layout);
+        TextView mSeasonsText = (TextView) findViewById(R.id.detail_seasons_text);
+        LinearLayout mPlayedByLayout = (LinearLayout) findViewById(R.id.detail_played_layout);
+        TextView mPlayedByText = (TextView) findViewById(R.id.detail_played_text);
 
         mNameText.setText(mCharacter.getmName());
         mGenderText.setText(mCharacter.getmGender());

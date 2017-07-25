@@ -2,15 +2,12 @@ package com.arbrettingen.charactersoficeandfire;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -20,20 +17,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,25 +36,9 @@ public class MainListActivity extends AppCompatActivity {
 
 
     public static final String LOG_TAG = MainListActivity.class.getSimpleName();
-    public static final Integer TOTAL_BOOKS = 12;
-    public static final Integer TOTAL_CHARACTERS = 2138;
-    public static final Integer TOTAL_HOUSES = 444;
-    public static final Integer ITEMS_PER_PAGE = 50;
-    /**
-     * URL to query the api of Ice and Fire dataset for character information
-     */
-    private static final String AOIAF_ALL_CHARACTERS_REQUEST_URL =
-            "https://www.anapioficeandfire.com/api/characters?pageSize=50&page=";
-    /**
-     * URL to query the api of Ice and Fire dataset for house information
-     */
-    private static final String AOIAF_ALL_HOUSES_REQUEST_URL =
-            "https://www.anapioficeandfire.com/api/houses?pageSize=50&page=";
-    /**
-     * URL to query the api of Ice and Fire dataset for house information
-     */
-    private static final String AOIAF_ALL_BOOKS_REQUEST_URL =
-            "https://www.anapioficeandfire.com/api/books?pageSize=" + TOTAL_BOOKS;
+    private static final Integer TOTAL_BOOKS = 12;
+    private static final Integer TOTAL_CHARACTERS = 2138;
+    private static final Integer TOTAL_HOUSES = 444;
 
     private ProgressBar mProgress;
     private TextView mProgressText;
@@ -107,12 +75,6 @@ public class MainListActivity extends AppCompatActivity {
         if (mMasterUrlToCharacterDictionary == null) {
 
             AOIAFLaunchAsyncTask bookAndHouseTask = new AOIAFLaunchAsyncTask(this) {
-                @Override
-                public void onResponseReceived(ArrayList<HashMap<String, String>> result) {
-                    mUrlToBookNamesDictionary = result.get(0);
-                    mUrlToHouseNamesDictionary = result.get(1);
-                    mHouseUrlToRegionDictionary = result.get(2);
-                }
             };
 
             bookAndHouseTask.execute();
@@ -120,22 +82,6 @@ public class MainListActivity extends AppCompatActivity {
             mMasterUrlToCharacterDictionary = new HashMap<>();
 
             AOIAFCharactersAsyncTask charactersTask = new AOIAFCharactersAsyncTask(this) {
-                @Override
-                public void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2) {
-                    if (result == null) {
-                        return;
-                    }
-                    mMasterUrlToCharacterDictionary = result;
-                    mUrlToCharacterNameDictionary = result2;
-
-                    Collection<ASOIAFCharacter> characterCollection = result.values();
-                    ArrayList<ASOIAFCharacter> characterList = new ArrayList<>(characterCollection);
-
-                    mProgressText.setVisibility(View.GONE);
-                    mProgress.setVisibility(View.GONE);
-
-                    updateUi(characterList, R.layout.action_bar_browse);
-                }
             };
 
             charactersTask.execute();
@@ -165,19 +111,6 @@ public class MainListActivity extends AppCompatActivity {
             mSearchBtn.setOnClickListener(new SearchButtonClickListener());
         }
     }
-
-    public String convertUrlToAllegianceName(String houseUrl) {
-        return mUrlToHouseNamesDictionary.get(houseUrl);
-    }
-
-    public String convertUrlToCharacterName(String charUrl) {
-        return mMasterUrlToCharacterDictionary.get(charUrl).getmName();
-    }
-
-    private String convertUrlToBookName(String bookUrl) {
-        return mUrlToBookNamesDictionary.get(bookUrl);
-    }
-
 
     /**
      * Main ListView listener launches CharacterDetailActivity using character at clicked position

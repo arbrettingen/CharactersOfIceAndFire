@@ -22,16 +22,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Alex on 7/21/2017.
+ * Queries https://www.anapioficeandfire.com/ via http request for some information about all
+ * characters listed, given as a JSON response and processed into a map of Character objects.
  */
 public abstract class AOIAFCharactersAsyncTask
-        extends AsyncTask<URL, Integer, HashMap<String, ASOIAFCharacter>> implements CharacterIF {
+        extends AsyncTask<URL, Integer, HashMap<String, ASOIAFCharacter>> {
 
-    public static final String LOG_TAG = MainListActivity.class.getSimpleName();
-    public static final Integer TOTAL_BOOKS = 12;
-    public static final Integer TOTAL_CHARACTERS = 2138;
-    public static final Integer TOTAL_HOUSES = 444;
-    public static final Integer ITEMS_PER_PAGE = 50;
+    private static final String LOG_TAG = MainListActivity.class.getSimpleName();
+    private static final Integer TOTAL_BOOKS = 12;
+    private static final Integer TOTAL_CHARACTERS = 2138;
+    private static final Integer TOTAL_HOUSES = 444;
+    private static final Integer ITEMS_PER_PAGE = 50;
 
     private HashMap<String, String> mUrlToCharacterNameDictionary = new HashMap<>();
 
@@ -216,7 +217,6 @@ public abstract class AOIAFCharactersAsyncTask
                         }
                     }
                     String url = characterJSONObject.getString("url");
-                    String region = "unaligned";
                     ASOIAFCharacter newCharacter = new ASOIAFCharacter(url, name, aliases,
                             allegiances);
 
@@ -231,13 +231,7 @@ public abstract class AOIAFCharactersAsyncTask
         return charactersDictionary;
     }
 
-    public abstract void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2);
+    private void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2){}
 
-
-}
-
-interface CharacterIF {
-
-    public void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2);
 
 }

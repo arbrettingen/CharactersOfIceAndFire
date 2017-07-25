@@ -21,28 +21,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Alex on 7/21/2017.
+ * Queries https://www.anapioficeandfire.com/ via http request for information about a specific
+ * character, given as a JSON response and processed into a Character object.
  */
 
-public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integer, ASOIAFCharacter> implements CharacterDetailIF{
+public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integer, ASOIAFCharacter> {
 
-    public static final String LOG_TAG = AOIAFCharacterDetailAsyncTask.class.getSimpleName();
-    public static final Integer TOTAL_CHARACTERS = 2138;
-    public static final Integer ITEMS_PER_PAGE = 50;
+    private static final String LOG_TAG = AOIAFCharacterDetailAsyncTask.class.getSimpleName();
 
     private String mUrl;
-    private HashMap<String, String> mHoueUrlToRegionName;
-    private HashMap<String, String> mHouseUrlToHouseName;
-    private HashMap<String, String> mBookUrlToBookName;
 
     public AOIAFCharacterDetailAsyncTask(Context myContext, String charUrl,
                                          HashMap<String, String> houeUrlToRegionName,
                                          HashMap<String, String> houseUrlToHouseName,
                                          HashMap<String, String> bookUrlToBookName) {
         mUrl = charUrl;
-        mHoueUrlToRegionName = (HashMap<String, String>) houeUrlToRegionName.clone();
-        mHouseUrlToHouseName = (HashMap<String, String>) houseUrlToHouseName.clone();
-        mBookUrlToBookName = (HashMap<String, String>) bookUrlToBookName.clone();
     }
 
     @Override
@@ -232,13 +225,7 @@ public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integ
         return null;
     }
 
-    @Override
-    public abstract void onResponseReceived(ASOIAFCharacter result);
+    private  void onResponseReceived(ASOIAFCharacter result){}
 
 }
 
-interface CharacterDetailIF {
-
-    public void onResponseReceived(ASOIAFCharacter result);
-
-}

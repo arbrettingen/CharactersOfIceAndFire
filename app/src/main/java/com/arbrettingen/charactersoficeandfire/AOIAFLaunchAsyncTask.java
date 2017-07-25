@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-
 /**
- * Created by Alex on 7/20/2017.
+ * Queries https://www.anapioficeandfire.com/ via http request for information about all listed
+ * books and houses, given as a JSON response and processed into a maps of string objects.
  */
 
 public abstract class AOIAFLaunchAsyncTask
-        extends AsyncTask<URL, Integer, ArrayList<HashMap<String, String>>> implements BooksAndHouseIF {
+        extends AsyncTask<URL, Integer, ArrayList<HashMap<String, String>>> {
 
     private static final String LOG_TAG = AOIAFLaunchAsyncTask.class.getSimpleName();
     private static final Integer TOTAL_BOOKS = 12;
@@ -50,8 +50,7 @@ public abstract class AOIAFLaunchAsyncTask
     private HashMap<String, String> mUrlToHouseNamesDictionary = new HashMap<>();
     private HashMap<String, String> mHouseUrlToRegionDictionary = new HashMap<>();
 
-    public AOIAFLaunchAsyncTask(Activity myContext)
-    {
+    public AOIAFLaunchAsyncTask(Activity myContext) {
         mProgress = (ProgressBar) myContext.findViewById(R.id.main_progress);
     }
 
@@ -64,7 +63,7 @@ public abstract class AOIAFLaunchAsyncTask
         ArrayList<HashMap<String, String>> ASOIAFData = new ArrayList<>();
 
         //Extract Books information first
-        String jsonResponse = "";
+        String jsonResponse;
         try {
             jsonResponse = makeHttpRequest(url);
             ASOIAFData.add(extractFromBooksJson(jsonResponse));
@@ -254,16 +253,6 @@ public abstract class AOIAFLaunchAsyncTask
 
     }
 
-    public abstract void onResponseReceived(ArrayList<HashMap<String, String>> result);
-
-    /**
-     * Created by Alex on 7/21/2017.
-     */
+    private void onResponseReceived(ArrayList<HashMap<String, String>> result) {}
 
 }
-interface BooksAndHouseIF {
-
-    public void onResponseReceived(ArrayList<HashMap<String, String>> result);
-
-}
-

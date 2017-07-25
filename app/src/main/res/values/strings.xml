@@ -17,6 +17,6 @@
     <string name="Books">Books Appeared In:</string>
     <string name="TVSeasons">TV Seasons Appeared In:</string>
     <string name="PlayedBy">Portrayed By:</string>
-    <string name="LoadingCharacters">Loading Characters</string>
+    <string name="LoadingCharacters">Loading Characters . . .</string>
 
 </resources>
