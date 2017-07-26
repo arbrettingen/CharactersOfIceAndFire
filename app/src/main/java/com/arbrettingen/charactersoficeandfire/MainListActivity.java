@@ -114,7 +114,7 @@ public class MainListActivity extends AppCompatActivity {
     }
 
     /**
-     * Update the screen to display information from the given {@link ASOIAFCharacter}.
+     * Update the screen to display information from the given ASOIAFCharacter.
      */
     private void updateUi(ArrayList<ASOIAFCharacter> characterList, int actionBar) {
         Collections.sort(characterList);

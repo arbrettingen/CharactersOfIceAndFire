@@ -21,9 +21,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Queries https://www.anapioficeandfire.com/ via http request for information about a specific
+ * AOIAFCharacterDetailAsyncTask.java
+ *
+ * <P>Queries https://www.anapioficeandfire.com/ via http request for information about a specific
  * character, given as a JSON response and processed into a Character object.
+ *
+ * @author Alex Brettingen
+ * @version 1.0
  */
+
 
 public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integer, ASOIAFCharacter> {
 
@@ -57,7 +63,7 @@ public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integ
 
     /**
      * Update the screen with the given characterlist (which was the result of the
-     * {@link MainListActivity}).
+     * MainListActivity.
      */
     @Override
     protected void onPostExecute(ASOIAFCharacter newCharacter) {
@@ -127,7 +133,7 @@ public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integ
     }
 
     /**
-     * Convert the {@link InputStream} into a String which contains the
+     * Convert the InputStream into a String which contains the
      * whole JSON response from the server.
      */
     private String readFromStream(InputStream inputStream) throws IOException {
@@ -143,6 +149,16 @@ public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integ
         }
         return output.toString();
     }
+
+    /**
+     * Returns an ASOIAFCharacter object containing data parsed from the given JSON string.
+     * <p>
+     * This method will create entries for all fields in the ASOIAFCharacter instance, even if they
+     * are just empty strings.
+     *
+     * @param  characterJSON  an absolute URL giving the base location of the image
+     * @return  an ASOIAFCharacter object containing entries for all its fields.
+     */
 
     private ASOIAFCharacter extractCharacterDetailFromJSON(String characterJSON){
         // If the JSON string is empty or null, then return early.

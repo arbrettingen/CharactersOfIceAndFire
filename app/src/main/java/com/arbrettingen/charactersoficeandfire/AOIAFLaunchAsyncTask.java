@@ -21,10 +21,14 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
- * Queries https://www.anapioficeandfire.com/ via http request for information about all listed
+ * AOIAFLaunchAsyncTask.java
+ *
+ * <P>Queries https://www.anapioficeandfire.com/ via http request for information about all listed
  * books and houses, given as a JSON response and processed into a maps of string objects.
+ *
+ * @author Alex Brettingen
+ * @version 1.0
  */
 
 public abstract class AOIAFLaunchAsyncTask
@@ -97,8 +101,7 @@ public abstract class AOIAFLaunchAsyncTask
     }
 
     /**
-     * Update the screen with the given progress received from updateProgress()
-     * {@link }).
+     * Update the screen with the given progress received from updateProgress().
      */
     @Override
     protected void onProgressUpdate(Integer... values) {
@@ -107,8 +110,7 @@ public abstract class AOIAFLaunchAsyncTask
     }
 
     /**
-     * Update the screen with the given characterlist (which was the result of the
-     * {@link }).
+     * Update the screen with the given characterlist (which was the result of the.
      */
     @Override
     protected void onPostExecute(ArrayList<HashMap<String, String>> data) {
@@ -175,7 +177,7 @@ public abstract class AOIAFLaunchAsyncTask
     }
 
     /**
-     * Convert the {@link InputStream} into a String which contains the
+     * Convert the InputStream into a String which contains the
      * whole JSON response from the server.
      */
     private String readFromStream(InputStream inputStream) throws IOException {
@@ -193,9 +195,17 @@ public abstract class AOIAFLaunchAsyncTask
     }
 
     /**
-     * Populate regions and house name array by parsing out information
-     * about the houses from the input ASOIAFJSON string.
+     * Populates a url String to String house name map containing data parsed from the given JSON
+     * string.
+     * <p>
+     * Also populates a url String to region name String map.
+     *
+     * @param  housesJSON  a String containing JSON text representing all houses on
+     *                         the server.
+     * @param   pageNum an integer representing the page of the response the JSON String is
+     *                  representing.
      */
+
     private void extractFromHousesJson(String housesJSON, int pageNum) {
         // If the JSON string is empty or null, then return early.
         HashMap<String, String> urlToHouseNamesDictionary = new HashMap<>();
@@ -227,8 +237,12 @@ public abstract class AOIAFLaunchAsyncTask
     }
 
     /**
-     * Populate books array by parsing out information
-     * about the books from the input booksJSON string.
+     * Populates and return a url String to String book name map containing data parsed from the given JSON
+     * string.
+     *
+     * @param  booksJSON  a String containing JSON text representing all houses on
+     *                         the server.
+     * @return a map of url Strings to book name Strings.
      */
     private HashMap<String, String> extractFromBooksJson(String booksJSON) {
         HashMap<String, String> urlToBookNamesDictionary = new HashMap<>();

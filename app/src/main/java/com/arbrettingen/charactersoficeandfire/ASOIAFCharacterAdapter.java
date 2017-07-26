@@ -12,11 +12,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * ASOIAFCharacterAdapter populates the Main ListView with relevant row views containing view data
- * based on the given ArrayList of ASOIAFCharacter objects.
- */
 
+/**
+ * ASOIAFCharacterAdapter.java
+ *
+ * <P>ASOIAFCharacterAdapter populates the Main ListView with relevant row views containing view data
+ * based on the given ArrayList of ASOIAFCharacter objects.
+ *
+ * @author Alex Brettingen
+ * @version 1.0
+ */
 public class ASOIAFCharacterAdapter extends ArrayAdapter {
 
     private Context mContext;

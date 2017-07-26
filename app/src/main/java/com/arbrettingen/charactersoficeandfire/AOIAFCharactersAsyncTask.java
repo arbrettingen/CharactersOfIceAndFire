@@ -22,9 +22,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Queries https://www.anapioficeandfire.com/ via http request for some information about all
+ * AOIAFCharactersAsyncTask.java
+ *
+ * <P>Queries https://www.anapioficeandfire.com/ via http request for some information about all
  * characters listed, given as a JSON response and processed into a map of Character objects.
+ *
+ * @author Alex Brettingen
+ * @version 1.0
  */
+
 public abstract class AOIAFCharactersAsyncTask
         extends AsyncTask<URL, Integer, HashMap<String, ASOIAFCharacter>> {
 
@@ -77,8 +83,7 @@ public abstract class AOIAFCharactersAsyncTask
     }
 
     /**
-     * Update the screen with the given progress received from updateProgress()
-     * {@link }).
+     * Update the screen with the given progress received from updateProgress().
      */
     @Override
     protected void onProgressUpdate(Integer... values) {
@@ -87,8 +92,7 @@ public abstract class AOIAFCharactersAsyncTask
     }
 
     /**
-     * Update the screen with the given characterlist (which was the result of the
-     * {@link }).
+     * Update the screen with the given characterlist (which was the result of the.
      */
     @Override
     protected void onPostExecute(HashMap<String, ASOIAFCharacter> characterDictionary) {
@@ -158,7 +162,7 @@ public abstract class AOIAFCharactersAsyncTask
     }
 
     /**
-     * Convert the {@link InputStream} into a String which contains the
+     * Convert the InputStream into a String which contains the
      * whole JSON response from the server.
      */
     private String readFromStream(InputStream inputStream) throws IOException {
@@ -176,8 +180,15 @@ public abstract class AOIAFCharactersAsyncTask
     }
 
     /**
-     * Return a {@link ASOIAFCharacter} map by parsing out information
-     * about the characters from the input ASOIAFJSON string.
+     * Returns a url String to ASOIAFCharacter map containing data parsed from the given JSON string.
+     * <p>
+     * This method will create entries for just the name, url, aliases, and allegiances fields in
+     * the ASOIAFCharacter instance, even if they are just empty strings (aside from name).
+     *
+     * @param  charactersJSON  a String containing JSON text representing all characters on
+     *                         the server.
+     * @return  a url String to ASOIAFCharacter map containing entries for all characters on the
+     * server.
      */
     private HashMap<String, ASOIAFCharacter> extractFromCharactersJson(String charactersJSON, int pageNum) {
         // If the JSON string is empty or null, then return early.

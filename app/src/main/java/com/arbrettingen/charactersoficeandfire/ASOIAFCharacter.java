@@ -5,8 +5,13 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 
 /**
- * {@ASOIAFCharacter} represents a Character from the ASOIAF universe. It holds the details
+ * ASOIAFCharacter.java
+ *
+ * <P>{@ASOIAFCharacter} represents a Character from the ASOIAF universe. It holds the details
  * of that character such as name, allegiances, titles, etc.
+ *
+ * @author Alex Brettingen
+ * @version 1.0
  */
 
 public class ASOIAFCharacter implements Comparable<ASOIAFCharacter> {
