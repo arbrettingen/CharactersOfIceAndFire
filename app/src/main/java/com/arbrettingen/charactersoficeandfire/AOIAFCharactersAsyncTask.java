@@ -231,7 +231,7 @@ public abstract class AOIAFCharactersAsyncTask
         return charactersDictionary;
     }
 
-    private void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2){}
+    public void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2){}
 
 
 }

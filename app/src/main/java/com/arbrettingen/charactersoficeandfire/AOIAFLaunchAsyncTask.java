@@ -253,6 +253,6 @@ public abstract class AOIAFLaunchAsyncTask
 
     }
 
-    private void onResponseReceived(ArrayList<HashMap<String, String>> result) {}
+    public void onResponseReceived(ArrayList<HashMap<String, String>> result) {}
 
 }

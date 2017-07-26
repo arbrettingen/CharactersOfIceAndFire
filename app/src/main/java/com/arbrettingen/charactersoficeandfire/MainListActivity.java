@@ -75,6 +75,14 @@ public class MainListActivity extends AppCompatActivity {
         if (mMasterUrlToCharacterDictionary == null) {
 
             AOIAFLaunchAsyncTask bookAndHouseTask = new AOIAFLaunchAsyncTask(this) {
+                @Override
+                public void onResponseReceived(ArrayList<HashMap<String, String>> result) {
+
+                    mUrlToBookNamesDictionary = result.get(0);
+                    mUrlToHouseNamesDictionary = result.get(1);
+                    mHouseUrlToRegionDictionary = result.get(2);
+
+                }
             };
 
             bookAndHouseTask.execute();
@@ -82,6 +90,21 @@ public class MainListActivity extends AppCompatActivity {
             mMasterUrlToCharacterDictionary = new HashMap<>();
 
             AOIAFCharactersAsyncTask charactersTask = new AOIAFCharactersAsyncTask(this) {
+
+                @Override
+                public void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2) {
+                    mMasterUrlToCharacterDictionary = result;
+                    mUrlToCharacterNameDictionary = result2;
+
+                    Collection<ASOIAFCharacter> charColleciton = result.values();
+                    ArrayList<ASOIAFCharacter> charList = new ArrayList<ASOIAFCharacter>(charColleciton);
+
+                    mProgress.setVisibility(View.GONE);
+                    mProgressText.setVisibility(View.GONE);
+
+                    updateUi(charList, R.layout.action_bar_browse);
+
+                }
             };
 
             charactersTask.execute();
@@ -95,11 +118,14 @@ public class MainListActivity extends AppCompatActivity {
      */
     private void updateUi(ArrayList<ASOIAFCharacter> characterList, int actionBar) {
         Collections.sort(characterList);
-        ListView mMainListView = (ListView) findViewById(R.id.main_list_list);
-        ASOIAFCharacterAdapter mACharacterAdapter = new ASOIAFCharacterAdapter(getApplicationContext(), R.layout.main_list_item, characterList, mHouseUrlToRegionDictionary);
-
         mActiveCharacterList = characterList;
 
+        ImageView mBanner = (ImageView) findViewById(R.id.main_list_banner);
+        mBanner.setVisibility(View.VISIBLE);
+
+        ListView mMainListView = (ListView) findViewById(R.id.main_list_list);
+        ASOIAFCharacterAdapter mACharacterAdapter = new ASOIAFCharacterAdapter(getApplicationContext(), R.layout.main_list_item, characterList, mHouseUrlToRegionDictionary);
+        mMainListView.setVisibility(View.VISIBLE);
         mMainListView.setAdapter(mACharacterAdapter);
         mMainListView.setOnItemClickListener(new MainListItemListener());
 

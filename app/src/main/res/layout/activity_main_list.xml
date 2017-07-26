@@ -9,7 +9,7 @@
         android:id="@+id/main_progress"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="160dp"
         android:layout_marginTop="40dp"
         android:indeterminate="false" />
 
@@ -29,7 +29,8 @@
         android:layout_height="0dp"
         android:layout_weight="4"
         android:scaleType="centerCrop"
-        android:src="@drawable/banner" />
+        android:src="@drawable/banner"
+        android:visibility="gone"/>
 
     <ListView
         android:id="@+id/main_list_list"
@@ -37,6 +38,7 @@
         android:layout_height="0dp"
         android:layout_weight="20"
         android:divider="@color/colorAccent"
-        android:dividerHeight="2dp" />
+        android:dividerHeight="2dp"
+        android:visibility="gone"/>
 
 </LinearLayout>

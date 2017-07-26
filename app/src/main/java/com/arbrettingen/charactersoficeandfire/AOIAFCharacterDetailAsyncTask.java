@@ -31,10 +31,7 @@ public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integ
 
     private String mUrl;
 
-    public AOIAFCharacterDetailAsyncTask(Context myContext, String charUrl,
-                                         HashMap<String, String> houeUrlToRegionName,
-                                         HashMap<String, String> houseUrlToHouseName,
-                                         HashMap<String, String> bookUrlToBookName) {
+    public AOIAFCharacterDetailAsyncTask(Context myContext, String charUrl) {
         mUrl = charUrl;
     }
 
@@ -225,7 +222,7 @@ public abstract class AOIAFCharacterDetailAsyncTask extends AsyncTask<URL, Integ
         return null;
     }
 
-    private  void onResponseReceived(ASOIAFCharacter result){}
+    public void onResponseReceived(ASOIAFCharacter result){}
 
 }
 

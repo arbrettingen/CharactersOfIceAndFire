@@ -65,10 +65,16 @@ public class CharacterDetailActivity extends AppCompatActivity {
         String charUrl = (String) thisIntent.getExtras().get("Character Url");
 
         if (thisIntent.hasExtra("Character Url")) {
-            AOIAFCharacterDetailAsyncTask characterDetailTask = new AOIAFCharacterDetailAsyncTask(getApplicationContext(),
-                    charUrl , mHouseUrlToRegionDictionary,
-                    mUrlToHouseNamesDictionary, mUrlToBookNamesDictionary) {
-            };
+            AOIAFCharacterDetailAsyncTask characterDetailTask =
+                    new AOIAFCharacterDetailAsyncTask(getApplicationContext(), charUrl) {
+
+                        @Override
+                        public void onResponseReceived(ASOIAFCharacter result) {
+                            mCharacter = result;
+
+                            updateUi();
+                        }
+                    };
             characterDetailTask.execute();
         }
     }
