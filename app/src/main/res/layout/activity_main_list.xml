@@ -9,24 +9,23 @@
         android:id="@+id/main_progress"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:layout_marginTop="40dp"
+        android:layout_height="@dimen/progress_bar_height"
+        android:layout_marginTop="@dimen/icon_length"
         android:indeterminate="false" />
 
     <TextView
         android:id="@+id/main_loading_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="130dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/margin_medium"
         android:text="@string/LoadingCharacters"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/textsize_large" />
 
     <ImageView
         android:id="@+id/main_list_banner"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/margin_zero"
         android:layout_weight="4"
         android:scaleType="centerCrop"
         android:src="@drawable/banner"
@@ -35,10 +34,10 @@
     <ListView
         android:id="@+id/main_list_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/margin_zero"
         android:layout_weight="20"
         android:divider="@color/colorAccent"
-        android:dividerHeight="2dp"
+        android:dividerHeight="@dimen/list_divider_height"
         android:visibility="gone"/>
 
 </LinearLayout>

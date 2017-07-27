@@ -23,21 +23,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingBottom="4dp"
-                android:paddingTop="32dp"
+                android:paddingBottom="@dimen/margin_tiny"
+                android:paddingTop="@dimen/name_text_margin_top"
                 android:text="@string/ExampleText"
                 android:textColor="@color/colorAccent"
-                android:textSize="22sp" />
+                android:textSize="@dimen/textsize_name_text" />
 
             <TextView
                 android:id="@+id/detail_gender_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingBottom="20dp"
+                android:paddingBottom="@dimen/margin_large"
                 android:text="@string/ExampleText"
                 android:textColor="@color/colorAccent"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,19 +52,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Allegiances"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_allegiances_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -80,19 +80,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Aliases"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_alias_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -108,19 +108,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Born"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_born_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -136,19 +136,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Died"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_died_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -164,19 +164,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Titles"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_titles_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -192,19 +192,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Father"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_father_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -220,19 +220,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Mother"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_mother_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -248,19 +248,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Spouse"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_spouse_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -276,19 +276,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Culture"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_culture_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -304,19 +304,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/Books"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_books_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -332,19 +332,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/TVSeasons"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_seasons_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 
@@ -360,19 +360,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/margin_small"
                 android:text="@string/PlayedBy"
                 android:textColor="@color/mainGray"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_medium" />
 
             <TextView
                 android:id="@+id/detail_played_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/margin_small"
                 android:text="@string/ExampleTextLong"
                 android:textColor="@color/mainGray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_small" />
 
         </LinearLayout>
 

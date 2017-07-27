@@ -183,7 +183,6 @@ public class MainListActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    //// TODO: 7/23/2017 fix search button
 
                     Collection<ASOIAFCharacter> characterCollection = mMasterUrlToCharacterDictionary.values();
                     ArrayList<ASOIAFCharacter> mSearchedCharacters = new ArrayList<>();

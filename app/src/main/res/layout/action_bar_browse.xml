@@ -20,7 +20,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="8dp"
+        android:padding="@dimen/margin_small"
         android:src="@drawable/search" />
 
 </RelativeLayout>
