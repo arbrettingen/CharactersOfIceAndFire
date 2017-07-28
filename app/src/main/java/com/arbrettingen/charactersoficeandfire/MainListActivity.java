@@ -43,6 +43,7 @@ public class MainListActivity extends AppCompatActivity {
     private ProgressBar mProgress;
     private TextView mProgressText;
     private ActionBar mActionBar;
+    private TextView mErrorTextView;
 
     private HashMap<String, ASOIAFCharacter> mMasterUrlToCharacterDictionary;
     private HashMap<String, String> mUrlToCharacterNameDictionary;
@@ -66,6 +67,9 @@ public class MainListActivity extends AppCompatActivity {
         mProgress.setProgress(0);
 
         mProgressText = (TextView) findViewById(R.id.main_loading_text);
+
+        mErrorTextView = (TextView) findViewById(R.id.main_error_txt);
+
 
         mActionBar = getSupportActionBar();
         mActionBar.setCustomView(R.layout.action_bar_browse);
@@ -117,25 +121,42 @@ public class MainListActivity extends AppCompatActivity {
      * Update the screen to display information from the given ASOIAFCharacter.
      */
     private void updateUi(ArrayList<ASOIAFCharacter> characterList, int actionBar) {
-        Collections.sort(characterList);
-        mActiveCharacterList = characterList;
-
-        ImageView mBanner = (ImageView) findViewById(R.id.main_list_banner);
-        mBanner.setVisibility(View.VISIBLE);
 
         ListView mMainListView = (ListView) findViewById(R.id.main_list_list);
-        ASOIAFCharacterAdapter mACharacterAdapter = new ASOIAFCharacterAdapter(getApplicationContext(), R.layout.main_list_item, characterList, mHouseUrlToRegionDictionary);
-        mMainListView.setVisibility(View.VISIBLE);
-        mMainListView.setAdapter(mACharacterAdapter);
-        mMainListView.setOnItemClickListener(new MainListItemListener());
 
-
-        if (actionBar == R.layout.action_bar_browse) {
-            mActionBar = getSupportActionBar();
-            mActionBar.setCustomView(actionBar);
-            ImageView mSearchBtn = (ImageView) findViewById(R.id.btn_action_search);
-            mSearchBtn.setOnClickListener(new SearchButtonClickListener());
+        if (mMasterUrlToCharacterDictionary.isEmpty()){
+            mErrorTextView.setVisibility(View.VISIBLE);
+            mMainListView.setVisibility(View.GONE);
+            mProgress.setVisibility(View.GONE);
+            mProgressText.setVisibility(View.GONE);
         }
+        else {
+            mErrorTextView.setVisibility(View.GONE);
+            Collections.sort(characterList);
+            mActiveCharacterList = characterList;
+
+            ImageView mBanner = (ImageView) findViewById(R.id.main_list_banner);
+            mBanner.setVisibility(View.VISIBLE);
+
+
+            ASOIAFCharacterAdapter mACharacterAdapter = new ASOIAFCharacterAdapter(getApplicationContext(), R.layout.main_list_item, characterList, mHouseUrlToRegionDictionary);
+            mMainListView.setVisibility(View.VISIBLE);
+            mMainListView.setAdapter(mACharacterAdapter);
+            mMainListView.setOnItemClickListener(new MainListItemListener());
+
+            if (actionBar == R.layout.action_bar_browse) {
+                mActionBar = getSupportActionBar();
+                mActionBar.setCustomView(actionBar);
+                ImageView mSearchBtn = (ImageView) findViewById(R.id.btn_action_search);
+                mSearchBtn.setOnClickListener(new SearchButtonClickListener());
+            }
+        }
+
+
+    }
+
+    public void networkErrorState(String errorMessage){
+        TextView errorTextView = (TextView) findViewById(R.id.main_error_txt);
     }
 
     /**
@@ -212,4 +233,5 @@ public class MainListActivity extends AppCompatActivity {
             });
         }
     }
+
 }

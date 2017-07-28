@@ -40,4 +40,16 @@
         android:dividerHeight="@dimen/list_divider_height"
         android:visibility="gone"/>
 
+    <TextView
+        android:id="@+id/main_error_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="@dimen/margin_large"
+        android:text="@string/ExampleText"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/textsize_large"
+        android:visibility="gone"
+        />
+
 </LinearLayout>

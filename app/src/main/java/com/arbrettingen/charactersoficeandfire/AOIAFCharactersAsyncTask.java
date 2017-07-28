@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +48,10 @@ public abstract class AOIAFCharactersAsyncTask
 
     private ProgressBar mProgress;
 
+    private String mErrorTxt;
+
+    private Activity mContext;
+
     /**
      * URL to query the api of Ice and Fire dataset for character information
      */
@@ -53,6 +61,7 @@ public abstract class AOIAFCharactersAsyncTask
     public AOIAFCharactersAsyncTask(Activity myContext)
     {
         mProgress = myContext.findViewById(R.id.main_progress);
+        mContext = myContext;
     }
 
     @Override
@@ -74,6 +83,8 @@ public abstract class AOIAFCharactersAsyncTask
                 characterDictionary.putAll(extractFromCharactersJson(jsonResponse, i));
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+                mErrorTxt = "Problem making the HTTP request. Please restart the application.";
+                publishProgress(-1);
             }
         }
 
@@ -87,7 +98,22 @@ public abstract class AOIAFCharactersAsyncTask
      */
     @Override
     protected void onProgressUpdate(Integer... values) {
-        mProgress.setProgress(values[0]);
+
+        if (values[0] == -1){
+            ImageView bannerImg = (ImageView) mContext.findViewById(R.id.main_list_banner);
+            ListView mainListView = (ListView) mContext.findViewById(R.id.main_list_list);
+            TextView progressText = (TextView) mContext.findViewById(R.id.main_loading_text);
+            TextView errorTextView = (TextView) mContext.findViewById(R.id.main_error_txt);
+            errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.setText(mErrorTxt);
+            bannerImg.setVisibility(View.GONE);
+            mainListView.setVisibility(View.GONE);
+            mProgress.setVisibility(View.GONE);
+            progressText.setVisibility(View.GONE);
+        }
+        else {
+            mProgress.setProgress(values[0]);
+        }
         super.onProgressUpdate(values);
     }
 
@@ -112,6 +138,8 @@ public abstract class AOIAFCharactersAsyncTask
             url = new URL(stringUrl);
         } catch (MalformedURLException exception) {
             Log.e(LOG_TAG, "Error with creating URL", exception);
+            mErrorTxt = "Error with creating URL. Please restart the application.";
+            publishProgress(-1);
             return null;
         }
         return url;
@@ -146,9 +174,13 @@ public abstract class AOIAFCharactersAsyncTask
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+                mErrorTxt = "Error response code: " + urlConnection.getResponseCode() + ". Please restart the application.";
+                publishProgress(-1);
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving the ASOIAF Character JSON results.", e);
+            mErrorTxt = "Problem retrieving the ASOIAF Character JSON results. Please restart the application.";
+            publishProgress(-1);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -238,6 +270,8 @@ public abstract class AOIAFCharactersAsyncTask
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the characters JSON results", e);
+            mErrorTxt = "Problem parsing the characters JSON results. Please restart the application.";
+            publishProgress(-1);
         }
         return charactersDictionary;
     }

@@ -1,10 +1,15 @@
 package com.arbrettingen.charactersoficeandfire;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,12 +55,15 @@ public abstract class AOIAFLaunchAsyncTask
             "https://www.anapioficeandfire.com/api/books?pageSize=" + TOTAL_BOOKS;
 
     private ProgressBar mProgress;
+    private Activity mContext;
+    private String mErrorTxt;
 
     private HashMap<String, String> mUrlToHouseNamesDictionary = new HashMap<>();
     private HashMap<String, String> mHouseUrlToRegionDictionary = new HashMap<>();
 
     public AOIAFLaunchAsyncTask(Activity myContext) {
         mProgress = (ProgressBar) myContext.findViewById(R.id.main_progress);
+        mContext = myContext;
     }
 
 
@@ -73,6 +81,8 @@ public abstract class AOIAFLaunchAsyncTask
             ASOIAFData.add(extractFromBooksJson(jsonResponse));
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+            mErrorTxt = "Problem making the HTTP request. Please restart the application.";
+            publishProgress(-1);
         }
 
 
@@ -89,6 +99,8 @@ public abstract class AOIAFLaunchAsyncTask
                 extractFromHousesJson(jsonResponse, i);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+                mErrorTxt = "Problem making the HTTP request. Please restart the application.";
+                publishProgress(-1);
             }
 
         }
@@ -105,7 +117,22 @@ public abstract class AOIAFLaunchAsyncTask
      */
     @Override
     protected void onProgressUpdate(Integer... values) {
-        mProgress.setProgress(values[0]);
+
+        if (values[0] == -1){
+            ImageView bannerImg = (ImageView) mContext.findViewById(R.id.main_list_banner);
+            ListView mainListView = (ListView) mContext.findViewById(R.id.main_list_list);
+            TextView progressText = (TextView) mContext.findViewById(R.id.main_loading_text);
+            TextView errorTextView = (TextView) mContext.findViewById(R.id.main_error_txt);
+            errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.setText(mErrorTxt);
+            bannerImg.setVisibility(View.GONE);
+            mainListView.setVisibility(View.GONE);
+            mProgress.setVisibility(View.GONE);
+            progressText.setVisibility(View.GONE);
+        }
+        else{
+            mProgress.setProgress(values[0]);
+        }
         super.onProgressUpdate(values);
     }
 
@@ -127,6 +154,8 @@ public abstract class AOIAFLaunchAsyncTask
             url = new URL(stringUrl);
         } catch (MalformedURLException exception) {
             Log.e(LOG_TAG, "Error with creating URL", exception);
+            mErrorTxt = "Error with creating URL. Please restart the application.";
+            publishProgress(-1);
             return null;
         }
         return url;
@@ -161,9 +190,13 @@ public abstract class AOIAFLaunchAsyncTask
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+                mErrorTxt = "Error response code: " + urlConnection.getResponseCode() + ". Please restart the application.";
+                publishProgress(-1);
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the ASOIAF Character JSON results.", e);
+            Log.e(LOG_TAG, "Problem retrieving the ASOIAF JSON results.", e);
+            mErrorTxt = "Problem retrieving the ASOIAF JSON results. Please restart the application.";
+            publishProgress(-1);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -230,6 +263,8 @@ public abstract class AOIAFLaunchAsyncTask
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the characters JSON results", e);
+            mErrorTxt = "Problem parsing the houses JSON results. Please restart the application.";
+            publishProgress(-1);
         }
 
         data.add(urlToHouseNamesDictionary);
@@ -262,6 +297,8 @@ public abstract class AOIAFLaunchAsyncTask
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the characters JSON results", e);
+            mErrorTxt = "Problem parsing the books JSON results. Please restart the application.";
+            publishProgress(-1);
         }
         return urlToBookNamesDictionary;
 
