@@ -193,6 +193,10 @@ public class ASOIAFCharacter implements Comparable<ASOIAFCharacter> {
         this.mPlayedBy = mPlayedBy;
     }
 
+    @Override
+    public String toString() {
+        return mName;
+    }
 
     @Override
     public int compareTo(@NonNull ASOIAFCharacter asoiafCharacter) {
