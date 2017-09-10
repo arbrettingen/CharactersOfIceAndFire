@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -29,10 +30,21 @@ public class CharacterDetailActivity extends AppCompatActivity {
     private static final String AOIAF_HOUSE_REQUEST_URL =
             "https://www.anapioficeandfire.com/api/houses/";
 
-    private ASOIAFCharacter mCharacter;
-    private String father;
-    private String mother;
-    private String spouse;
+    private String mUrl;
+    private String mName;
+    private String mGender;
+    private String mCulture;
+    private String mYearBorn;
+    private String mYearDied;
+    private ArrayList<String> mTitles = new ArrayList<>();
+    private ArrayList<String> mAliases = new ArrayList<>();
+    private String mFather;
+    private String mMother;
+    private String mSpouse;
+    private ArrayList<String> mAllegiances = new ArrayList<>();
+    private ArrayList<String> mBooks = new ArrayList<>();
+    private ArrayList<String> mTVSeasons = new ArrayList<>();
+    private ArrayList<String> mPlayedBy = new ArrayList<>();
 
     private HashMap<String, String> mUrlToCharacterNameDictionary = new HashMap<>();
     private HashMap<String, String> mUrlToBookNamesDictionary = new HashMap<>();
@@ -61,22 +73,52 @@ public class CharacterDetailActivity extends AppCompatActivity {
         if (thisIntent.hasExtra("Character URL to Name")){
             mUrlToCharacterNameDictionary = (HashMap<String, String>) thisIntent.getExtras().get("Character URL to Name");
         }
-
-        String charUrl = (String) thisIntent.getExtras().get("Character Url");
-
-        if (thisIntent.hasExtra("Character Url")) {
-            AOIAFCharacterDetailAsyncTask characterDetailTask =
-                    new AOIAFCharacterDetailAsyncTask(getApplicationContext(), charUrl) {
-
-                        @Override
-                        public void onResponseReceived(ASOIAFCharacter result) {
-                            mCharacter = result;
-
-                            updateUi();
-                        }
-                    };
-            characterDetailTask.execute();
+        if (thisIntent.hasExtra("Character URL")){
+            mUrl = thisIntent.getStringExtra("Character URL");
         }
+        if (thisIntent.hasExtra("Character Name")){
+            mName = thisIntent.getStringExtra("Character Name");
+        }
+        if (thisIntent.hasExtra("Character Gender")){
+            mGender = thisIntent.getStringExtra("Character Gender");
+        }
+        if (thisIntent.hasExtra("Character Culture")){
+            mCulture = thisIntent.getStringExtra("Character Culture");
+        }
+        if (thisIntent.hasExtra("Character Born")){
+            mYearBorn = thisIntent.getStringExtra("Character Born");
+        }
+        if (thisIntent.hasExtra("Character Died")){
+            mYearDied = thisIntent.getStringExtra("Character Died");
+        }
+        if (thisIntent.hasExtra("Character Titles")){
+            mTitles = (ArrayList<String>) thisIntent.getExtras().get("Character Titles");
+        }
+        if (thisIntent.hasExtra("Character Aliases")){
+            mAliases = (ArrayList<String>) thisIntent.getExtras().get("Character Aliases");
+        }
+        if (thisIntent.hasExtra("Character Father")){
+            mFather = mUrlToCharacterNameDictionary.get(thisIntent.getStringExtra("Character Father"));
+        }
+        if (thisIntent.hasExtra("Character Mother")){
+            mMother = mUrlToCharacterNameDictionary.get(thisIntent.getStringExtra("Character Mother"));
+        }
+        if (thisIntent.hasExtra("Character Spouse")){
+            mSpouse = mUrlToCharacterNameDictionary.get(thisIntent.getStringExtra("Character Spouse"));
+        }
+        if (thisIntent.hasExtra("Character Allegiances")){
+            mAllegiances = (ArrayList<String>) thisIntent.getExtras().get("Character Allegiances");
+        }
+        if (thisIntent.hasExtra("Character Books")){
+            mBooks = (ArrayList<String>) thisIntent.getExtras().get("Character Books");
+        }
+        if (thisIntent.hasExtra("Character Seasons")){
+            mTVSeasons = (ArrayList<String>) thisIntent.getExtras().get("Character Seasons");
+        }
+        if (thisIntent.hasExtra("Character PlayedBy")){
+            mPlayedBy = (ArrayList<String>) thisIntent.getExtras().get("Character PlayedBy");
+        }
+        updateUi();
     }
 
     private void updateUi() {
@@ -112,13 +154,13 @@ public class CharacterDetailActivity extends AppCompatActivity {
         LinearLayout mPlayedByLayout = (LinearLayout) findViewById(R.id.detail_played_layout);
         TextView mPlayedByText = (TextView) findViewById(R.id.detail_played_text);
 
-        mNameText.setText(mCharacter.getmName());
-        mGenderText.setText(mCharacter.getmGender());
+        mNameText.setText(mName);
+        mGenderText.setText(mGender);
 
-        if (mCharacter.getmAllegiances().size() > 0) {
+        if (mAllegiances.size() > 0) {
             String allegiances = "";
-            for (int i = 0; i < mCharacter.getmAllegiances().size(); i++) {
-                String allegiance = mCharacter.getmAllegiances().get(i);
+            for (int i = 0; i < mAllegiances.size(); i++) {
+                String allegiance = mAllegiances.get(i);
                 if (!allegiance.contains("anapioficeandfire")){
                     allegiance = repairAllegianceUrl(allegiance);
                 }
@@ -136,10 +178,10 @@ public class CharacterDetailActivity extends AppCompatActivity {
             mAllegiancesLayout.setVisibility(View.GONE);
         }
 
-        if (mCharacter.getmAliases().size() > 0) {
+        if (mAliases.size() > 0) {
             String aliases = "";
-            for (int i = 0; i < mCharacter.getmAliases().size(); i++) {
-                aliases = aliases + mCharacter.getmAliases().get(i) + ", ";
+            for (int i = 0; i < mAliases.size(); i++) {
+                aliases = aliases + mAliases.get(i) + ", ";
             }
             if (aliases.length() > 0) {
                 aliases = aliases.substring(0, aliases.length() - 2);
@@ -153,22 +195,22 @@ public class CharacterDetailActivity extends AppCompatActivity {
             mAliasesLayout.setVisibility(View.GONE);
         }
 
-        if (mCharacter.getmYearBorn().equals("")) {
+        if (mYearBorn.equals("")) {
             mBornLayout.setVisibility(View.GONE);
         } else {
-            mBornText.setText(mCharacter.getmYearBorn());
+            mBornText.setText(mYearBorn);
         }
 
-        if (mCharacter.getmYearDied().equals("")) {
+        if (mYearDied.equals("")) {
             mDiedLayout.setVisibility(View.GONE);
         } else {
-            mDiedText.setText(mCharacter.getmYearDied());
+            mDiedText.setText(mYearDied);
         }
 
-        if (mCharacter.getmTitles().size() > 0) {
+        if (mTitles.size() > 0) {
             String titles = "";
-            for (int i = 0; i < mCharacter.getmTitles().size(); i++) {
-                titles = titles + mCharacter.getmTitles().get(i) + ", ";
+            for (int i = 0; i < mTitles.size(); i++) {
+                titles = titles + mTitles.get(i) + ", ";
             }
             if (titles.length() > 0) {
                 titles = titles.substring(0, titles.length() - 2);
@@ -182,32 +224,32 @@ public class CharacterDetailActivity extends AppCompatActivity {
             mTitlesLayout.setVisibility(View.GONE);
         }
 
-        if (father != null) {
-            mFatherText.setText(father);
-        } else {
+        if (mFather == null || mFather.equals("")) {
             mFatherLayout.setVisibility(View.GONE);
-        }
-        if (mother != null) {
-            mMotherText.setText(mother);
         } else {
+            mFatherText.setText(mFather);
+        }
+        if (mMother == null || mMother.equals("")) {
             mMotherLayout.setVisibility(View.GONE);
-        }
-        if (spouse != null) {
-            mSpouseText.setText(spouse);
         } else {
+            mMotherText.setText(mMother);
+        }
+        if (mSpouse == null || mSpouse.equals("")) {
             mSpouseLayout.setVisibility(View.GONE);
+        } else {
+            mSpouseText.setText(mSpouse);
         }
 
-        if (mCharacter.getmCulture().equals("")) {
+        if (mCulture.equals("")) {
             mCultureLayout.setVisibility(View.GONE);
         } else {
-            mCultureText.setText(mCharacter.getmCulture());
+            mCultureText.setText(mCulture);
         }
 
-        if (mCharacter.getmBooks().size() > 0) {
+        if (mBooks.size() > 0) {
             String books = "";
-            for (int i = 0; i < mCharacter.getmBooks().size(); i++) {
-                String book = mCharacter.getmBooks().get(i);
+            for (int i = 0; i < mBooks.size(); i++) {
+                String book = mBooks.get(i);
                 if (!book.contains("anapioficeandfire")){
                     book = repairBookUrl(book);
                 }
@@ -225,10 +267,10 @@ public class CharacterDetailActivity extends AppCompatActivity {
             mBooksLayout.setVisibility(View.GONE);
         }
 
-        if (mCharacter.getmTVSeasons().size() > 0) {
+        if (mTVSeasons.size() > 0) {
             String seasons = "";
-            for (int i = 0; i < mCharacter.getmTVSeasons().size(); i++) {
-                seasons = seasons + mCharacter.getmTVSeasons().get(i) + ", ";
+            for (int i = 0; i < mTVSeasons.size(); i++) {
+                seasons = seasons + mTVSeasons.get(i) + ", ";
             }
             if (seasons.length() > 0) {
                 seasons = seasons.substring(0, seasons.length() - 2);
@@ -242,10 +284,10 @@ public class CharacterDetailActivity extends AppCompatActivity {
             mSeasonsLayout.setVisibility(View.GONE);
         }
 
-        if (mCharacter.getmPlayedBy().size() > 0) {
+        if (mPlayedBy.size() > 0) {
             String playedBy = "";
-            for (int i = 0; i < mCharacter.getmPlayedBy().size(); i++) {
-                playedBy = playedBy + mCharacter.getmPlayedBy().get(i) + ", ";
+            for (int i = 0; i < mPlayedBy.size(); i++) {
+                playedBy = playedBy + mPlayedBy.get(i) + ", ";
             }
             if (playedBy.length() > 0) {
                 playedBy = playedBy.substring(0, playedBy.length() - 2);

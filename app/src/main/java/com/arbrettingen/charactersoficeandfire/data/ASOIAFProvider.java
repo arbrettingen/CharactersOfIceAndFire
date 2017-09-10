@@ -215,6 +215,10 @@ public class ASOIAFProvider extends ContentProvider {
         if (house == null) {
             throw new IllegalArgumentException("House entry requires name text.");
         }
+        String url = values.getAsString(HousesEntry.COLUMN_HOUSE_URL);
+        if (url == null) {
+            throw new IllegalArgumentException("House entry requires url text.");
+        }
 
         // Get writable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -243,6 +247,11 @@ public class ASOIAFProvider extends ContentProvider {
         String book = values.getAsString(BooksEntry.COLUMN_BOOK_NAME);
         if (book == null) {
             throw new IllegalArgumentException("Book entry requires name text.");
+        }
+
+        String url = values.getAsString(BooksEntry.COLUMN_BOOK_URL);
+        if (url == null) {
+            throw new IllegalArgumentException("Book entry requires url text.");
         }
 
         // Get writable database
@@ -305,6 +314,13 @@ public class ASOIAFProvider extends ContentProvider {
             String name = values.getAsString(HousesEntry.COLUMN_HOUSE_NAME);
             if (name == null) {
                 throw new IllegalArgumentException("House name requires a text");
+            }
+        }
+
+        if (values.containsKey(HousesEntry.COLUMN_HOUSE_URL)) {
+            String url = values.getAsString(HousesEntry.COLUMN_HOUSE_URL);
+            if (url == null) {
+                throw new IllegalArgumentException("House url requires a text");
             }
         }
 
@@ -380,6 +396,13 @@ public class ASOIAFProvider extends ContentProvider {
             String name = values.getAsString(BooksEntry.COLUMN_BOOK_NAME);
             if (name == null) {
                 throw new IllegalArgumentException("Book name requires a text");
+            }
+        }
+
+        if (values.containsKey(BooksEntry.COLUMN_BOOK_URL)) {
+            String url = values.getAsString(BooksEntry.COLUMN_BOOK_URL);
+            if (url == null) {
+                throw new IllegalArgumentException("Book url requires a text");
             }
         }
 

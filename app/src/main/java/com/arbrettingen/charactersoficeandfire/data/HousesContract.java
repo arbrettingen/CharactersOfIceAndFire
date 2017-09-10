@@ -76,6 +76,13 @@ public class HousesContract {
          */
         public final static String COLUMN_HOUSE_REGION ="region";
 
+        /**
+         * House url text representing url to fetch this house
+         *
+         * Type: TEXT
+         */
+        public final static String COLUMN_HOUSE_URL ="url";
+
     }
 
 }

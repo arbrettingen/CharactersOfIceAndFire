@@ -72,6 +72,13 @@ public class BooksContract {
          * Type: TEXT
          */
         public final static String COLUMN_BOOK_NAME = "name";
+
+        /**
+         * Book url text representing url used to fetch this book.
+         * <p>
+         * Type: TEXT
+         */
+        public final static String COLUMN_BOOK_URL = "url";
     }
 
 }

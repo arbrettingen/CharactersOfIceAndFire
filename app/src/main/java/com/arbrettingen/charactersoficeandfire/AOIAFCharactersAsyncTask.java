@@ -1,6 +1,8 @@
 package com.arbrettingen.charactersoficeandfire;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,11 +27,14 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.arbrettingen.charactersoficeandfire.data.CharacterContract.CharacterEntry;
+
 /**
  * AOIAFCharactersAsyncTask.java
  *
  * <P>Queries https://www.anapioficeandfire.com/ via http request for some information about all
- * characters listed, given as a JSON response and processed into a map of Character objects.
+ * characters listed, given as a JSON response and processed into an SQLite table for use in the
+ * application.
  *
  * @author Alex Brettingen
  * @version 1.0
@@ -39,9 +44,7 @@ public abstract class AOIAFCharactersAsyncTask
         extends AsyncTask<URL, Integer, HashMap<String, ASOIAFCharacter>> {
 
     private static final String LOG_TAG = MainListActivity.class.getSimpleName();
-    private static final Integer TOTAL_BOOKS = 12;
     private static final Integer TOTAL_CHARACTERS = 2138;
-    private static final Integer TOTAL_HOUSES = 444;
     private static final Integer ITEMS_PER_PAGE = 50;
 
     private HashMap<String, String> mUrlToCharacterNameDictionary = new HashMap<>();
@@ -99,7 +102,7 @@ public abstract class AOIAFCharactersAsyncTask
     @Override
     protected void onProgressUpdate(Integer... values) {
 
-        if (values[0] == -1){
+        if (values[0] == -1){ //then display error state message
             ImageView bannerImg = (ImageView) mContext.findViewById(R.id.main_list_banner);
             ListView mainListView = (ListView) mContext.findViewById(R.id.main_list_list);
             TextView progressText = (TextView) mContext.findViewById(R.id.main_loading_text);
@@ -244,9 +247,19 @@ public abstract class AOIAFCharactersAsyncTask
                 mUrlToCharacterNameDictionary.put(characterJSONObject.getString("url"), name);
 
                 if (!name.equals("")) {
+                    ArrayList<String> titles = new ArrayList<>();
                     ArrayList<String> aliases = new ArrayList<>();
                     ArrayList<String> allegiances = new ArrayList<>();
+                    ArrayList<String> books = new ArrayList<>();
+                    ArrayList<String> tVSeasons = new ArrayList<>();
+                    ArrayList<String> playedBy = new ArrayList<>();
 
+                    JSONArray titlesJSONArray = characterJSONObject.getJSONArray("titles");
+                    if (titlesJSONArray.length() > 0) {
+                        for (int j = 0; j < titlesJSONArray.length(); j++) {
+                            titles.add(titlesJSONArray.getString(j));
+                        }
+                    }
                     JSONArray aliasesJSONArray = characterJSONObject.getJSONArray("aliases");
                     if (aliasesJSONArray.length() > 0) {
                         for (int j = 0; j < aliasesJSONArray.length(); j++) {
@@ -259,13 +272,42 @@ public abstract class AOIAFCharactersAsyncTask
                             allegiances.add(allegiancesJSONArray.getString(j));
                         }
                     }
+                    JSONArray booksJSONArray = characterJSONObject.getJSONArray("books");
+                    if (booksJSONArray.length() > 0) {
+                        for (int j = 0; j < booksJSONArray.length(); j++) {
+                            books.add(booksJSONArray.getString(j));
+                        }
+                    }
+                    JSONArray tVSeasonsJSONArray = characterJSONObject.getJSONArray("tvSeries");
+                    if (tVSeasonsJSONArray.length() > 0) {
+                        for (int j = 0; j < tVSeasonsJSONArray.length(); j++) {
+                            tVSeasons.add(tVSeasonsJSONArray.getString(j));
+                        }
+                    }
+                    JSONArray playedByJSONArray = characterJSONObject.getJSONArray("playedBy");
+                    if (playedByJSONArray.length() > 0) {
+                        for (int j = 0; j < playedByJSONArray.length(); j++) {
+                            playedBy.add(playedByJSONArray.getString(j));
+                        }
+                    }
                     String url = characterJSONObject.getString("url");
-                    ASOIAFCharacter newCharacter = new ASOIAFCharacter(url, name, aliases,
-                            allegiances);
+                    String gender = characterJSONObject.getString("gender");
+                    String culture = characterJSONObject.getString("culture");
+                    String yearBorn = characterJSONObject.getString("born");
+                    String yearDied = characterJSONObject.getString("died");
+                    String father = characterJSONObject.getString("father");
+                    String mother = characterJSONObject.getString("mother");
+                    String spouse = characterJSONObject.getString("spouse");
+
+                    ASOIAFCharacter newCharacter = new ASOIAFCharacter(url, name, gender,
+                            culture, yearBorn, yearDied, titles, aliases, father, mother,
+                            spouse, allegiances, books, tVSeasons, playedBy);
+
+                    insertCharacterIntoSQLTable(newCharacter);
 
                     charactersDictionary.put(url, newCharacter);
                     currChar++;
-                    publishProgress(TOTAL_BOOKS + TOTAL_HOUSES + currChar);
+                    publishProgress(currChar);
                 }
             }
         } catch (JSONException e) {
@@ -274,6 +316,48 @@ public abstract class AOIAFCharactersAsyncTask
             publishProgress(-1);
         }
         return charactersDictionary;
+    }
+
+    private void insertCharacterIntoSQLTable(ASOIAFCharacter newCharacter){
+
+        if (newCharacter == null){
+            return;
+        }
+        // Create a ContentValues object where column names are the keys,
+        // and character attributes are the values.
+        ContentValues values = new ContentValues();
+        values.put(CharacterEntry.COLUMN_CHARACTER_URL, newCharacter.getmUrl());
+        values.put(CharacterEntry.COLUMN_CHARACTER_NAME, newCharacter.getmName());
+        values.put(CharacterEntry.COLUMN_CHARACTER_ALIASES, arrayToString(newCharacter.getmAliases()));
+        values.put(CharacterEntry.COLUMN_CHARACTER_ALLEGIANCES, arrayToString(newCharacter.getmAllegiances()));
+        values.put(CharacterEntry.COLUMN_CHARACTER_BOOKS, arrayToString(newCharacter.getmBooks()));
+        values.put(CharacterEntry.COLUMN_CHARACTER_BORN, newCharacter.getmYearBorn());
+        values.put(CharacterEntry.COLUMN_CHARACTER_CULTURE, newCharacter.getmCulture());
+        values.put(CharacterEntry.COLUMN_CHARACTER_DIED, newCharacter.getmYearDied());
+        values.put(CharacterEntry.COLUMN_CHARACTER_FATHER, newCharacter.getmFather());
+        values.put(CharacterEntry.COLUMN_CHARACTER_GENDER, newCharacter.getmGender());
+        values.put(CharacterEntry.COLUMN_CHARACTER_MOTHER, newCharacter.getmMother());
+        values.put(CharacterEntry.COLUMN_CHARACTER_PLAYEDBY, arrayToString(newCharacter.getmPlayedBy()));
+        values.put(CharacterEntry.COLUMN_CHARACTER_SEASONS, arrayToString(newCharacter.getmTVSeasons()));
+        values.put(CharacterEntry.COLUMN_CHARACTER_SPOUSE, newCharacter.getmSpouse());
+        values.put(CharacterEntry.COLUMN_CHARACTER_TITLES, arrayToString(newCharacter.getmTitles()));
+
+        // Use the CharacterEntry#CONTENT_URI} to indicate that we want to insert
+        // into the characters database table.
+        // Receive the new content URI that will allow us to access row's data in the future.
+        Uri newUri = mContext.getContentResolver().insert(CharacterEntry.CONTENT_URI, values);
+
+    }
+
+    private String arrayToString(ArrayList<String> baseList){
+        String ret = "";
+        for (int i = 0; i < baseList.size(); i++) {
+            ret = ret + baseList.get(i) + ", ";
+        }
+        if (ret.length() > 0) {
+            ret = ret.substring(0, ret.length() - 2);
+        }
+        return ret;
     }
 
     public void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2){}
