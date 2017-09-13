@@ -1,8 +1,11 @@
 package com.arbrettingen.charactersoficeandfire;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arbrettingen.charactersoficeandfire.data.ASOIAFDbHelper;
 
@@ -56,21 +60,27 @@ public class MainListActivity extends AppCompatActivity implements
 
     /** Identifier for the characters data loader. Loads characters from SQLite table into the application */
     private static final int MAIN_CHARACTERS_LOADER = 0;
+    private boolean MAIN_CHARACTERS_LOADER_FINISHED = false;
 
     /** Identifier for the characters data loader. Fetches characters from API into SQLite table and application */
     private static final int MAIN_CHARACTERS_FETCH = 1;
+    private boolean MAIN_CHARACTERS_FETCH_FINISHED = false;
 
     /** Identifier for the houses data loader. Loads houses from SQLite table into the application */
     private static final int MAIN_HOUSES_LOADER = 2;
+    private boolean MAIN_HOUSES_LOADER_FINISHED = false;
 
     /** Identifier for the houses data loader. Fetches houses from API into SQLite table and application */
     private static final int MAIN_HOUSES_FETCH = 3;
+    private boolean MAIN_HOUSES_FETCH_FINISHED = false;
 
     /** Identifier for the books data loader. Loads books from SQLite table into the application */
     private static final int MAIN_BOOKS_LOADER = 4;
+    private boolean MAIN_BOOKS_LOADER_FINISHED = false;
 
     /** Identifier for the books data loader. Fetches books from API into SQLite table and application */
     private static final int MAIN_BOOKS_FETCH = 5;
+    private boolean MAIN_BOOKS_FETCH_FINISHED = false;
 
     public static final String LOG_TAG = MainListActivity.class.getSimpleName();
     private static final Integer TOTAL_BOOKS = 12;
@@ -80,11 +90,11 @@ public class MainListActivity extends AppCompatActivity implements
     private ProgressBar mProgress;
     private TextView mProgressText;
     private ActionBar mActionBar;
-    private TextView mErrorTextView;
     private ImageView mSearchBtn;
     private ImageView mSyncBtn;
     private ListView mMainListView;
     private ImageView mBanner;
+    private TextView mErrorText;
 
     private HashMap<String, ASOIAFCharacter> mMasterUrlToCharacterDictionary;
     private HashMap<String, String> mUrlToCharacterNameDictionary = new HashMap<>();
@@ -104,34 +114,39 @@ public class MainListActivity extends AppCompatActivity implements
 
         mMainListView = (ListView) findViewById(R.id.main_list_list);
         mBanner = (ImageView) findViewById(R.id.main_list_banner);
-
-
+        mErrorText = (TextView) findViewById(R.id.main_error_txt);
+        mErrorText.setVisibility(View.GONE);
         mProgress = (ProgressBar) findViewById(R.id.main_progress);
-        mProgress.setMax(TOTAL_BOOKS + TOTAL_CHARACTERS + TOTAL_HOUSES);
-        mProgress.setProgress(0);
         mProgressText = (TextView) findViewById(R.id.main_loading_text);
-        
-        if (mMasterUrlToCharacterDictionary == null){
-            //Acquire the size of the main dB used in the application to determine if there is data
-            //to load.
-            File f = getApplicationContext().getDatabasePath(ASOIAFDbHelper.DATABASE_NAME);
-            long dbSize = f.length();
 
-            if (dbSize > 0){
-                getLoaderManager().initLoader(MAIN_CHARACTERS_LOADER, null, this);
-                getLoaderManager().initLoader(MAIN_HOUSES_LOADER, null, this);
-                getLoaderManager().initLoader(MAIN_BOOKS_LOADER, null, this);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
 
-            } else{
-                getLoaderManager().initLoader(MAIN_CHARACTERS_FETCH, null, this);
-                getLoaderManager().initLoader(MAIN_HOUSES_FETCH, null, this);
-                getLoaderManager().initLoader(MAIN_BOOKS_FETCH, null, this);
-            }
+        if ((sharedPref.getBoolean("First Launch", true) || sharedPref.getBoolean("Resync Characters", true)) && !(sharedPref.getBoolean("Back Pressed", false))){
+            mMasterUrlToCharacterDictionary = new HashMap<>();
+            mProgress.setMax(TOTAL_BOOKS + TOTAL_CHARACTERS + TOTAL_HOUSES);
+            mProgress.setProgress(0);
+            mProgress.setVisibility(View.VISIBLE);
+            mProgressText.setVisibility(View.VISIBLE);
+            MAIN_CHARACTERS_FETCH_FINISHED = false;
+            MAIN_HOUSES_FETCH_FINISHED = false;
+            MAIN_BOOKS_FETCH_FINISHED = false;
+            getLoaderManager().restartLoader(MAIN_CHARACTERS_FETCH, null, this);
+            getLoaderManager().restartLoader(MAIN_HOUSES_FETCH, null, this);
+            getLoaderManager().restartLoader(MAIN_BOOKS_FETCH, null, this);
+            editor.putBoolean("First Launch", false);
+            editor.putBoolean("Resync Characters", false);
+            editor.apply();
+        } else {
+            mMasterUrlToCharacterDictionary = new HashMap<>();
+            mErrorText.setVisibility(View.GONE);
+            MAIN_CHARACTERS_LOADER_FINISHED = false;
+            MAIN_HOUSES_LOADER_FINISHED = false;
+            MAIN_BOOKS_LOADER_FINISHED = false;
+            getLoaderManager().restartLoader(MAIN_CHARACTERS_LOADER, null, this);
+            getLoaderManager().restartLoader(MAIN_HOUSES_LOADER, null, this);
+            getLoaderManager().restartLoader(MAIN_BOOKS_LOADER, null, this);
         }
-
-        //mProgressText = (TextView) findViewById(R.id.main_loading_text);
-        //mErrorTextView = (TextView) findViewById(R.id.main_error_txt);
-
         mActionBar = getSupportActionBar();
         mActionBar.setCustomView(R.layout.action_bar_browse);
 
@@ -140,32 +155,33 @@ public class MainListActivity extends AppCompatActivity implements
 
     }
 
+
+
     /**
      * Update the screen to display information from the given ASOIAFCharacter.
      */
     private void updateUi(ArrayList<ASOIAFCharacter> characterList, int actionBar) {
 
-
-
-        mErrorTextView = (TextView) findViewById(R.id.main_error_txt);
+        mErrorText = (TextView) findViewById(R.id.main_error_txt);
 
         if (mMasterUrlToCharacterDictionary == null || mMasterUrlToCharacterDictionary.isEmpty()){
-            mErrorTextView.setVisibility(View.VISIBLE);
+            mErrorText.setVisibility(View.VISIBLE);
             mMainListView.setVisibility(View.GONE);
             mProgress.setVisibility(View.GONE);
             mProgressText.setVisibility(View.GONE);
+            mBanner.setVisibility(View.GONE);
         }
         else {
-            mErrorTextView.setVisibility(View.GONE);
+            mErrorText.setVisibility(View.GONE);
             mMainListView.setVisibility(View.VISIBLE);
+            mBanner.setVisibility(View.VISIBLE);
+            mProgress.setVisibility(View.GONE);
+            mProgressText.setVisibility(View.GONE);
             Collections.sort(characterList);
             mActiveCharacterList = characterList;
 
-            mBanner.setVisibility(View.VISIBLE);
-
 
             ASOIAFCharacterAdapter mACharacterAdapter = new ASOIAFCharacterAdapter(getApplicationContext(), R.layout.main_list_item, characterList, mHouseUrlToRegionDictionary);
-            mMainListView.setVisibility(View.VISIBLE);
             mMainListView.setAdapter(mACharacterAdapter);
             mMainListView.setOnItemClickListener(new MainListItemListener());
 
@@ -182,35 +198,34 @@ public class MainListActivity extends AppCompatActivity implements
 
     }
 
-    public void networkErrorState(String errorMessage){
-        TextView errorTextView = (TextView) findViewById(R.id.main_error_txt);
-    }
-
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if (i == MAIN_CHARACTERS_FETCH) {
+            mProgress.setVisibility(View.VISIBLE);
+            mProgressText.setVisibility(View.VISIBLE);
             //fetch characters from api and put them into sql dB and lists
-            mMasterUrlToCharacterDictionary = new HashMap<>();
-
             AOIAFCharactersAsyncTask charactersTask = new AOIAFCharactersAsyncTask(this) {
 
                 @Override
                 public void onResponseReceived(HashMap<String, ASOIAFCharacter> result, HashMap<String, String> result2) {
                     mMasterUrlToCharacterDictionary = result;
                     mUrlToCharacterNameDictionary = result2;
-
                     Collection<ASOIAFCharacter> charColleciton = result.values();
                     ArrayList<ASOIAFCharacter> charList = new ArrayList<ASOIAFCharacter>(charColleciton);
-
                     mActiveCharacterList = charList;
+                    MAIN_CHARACTERS_FETCH_FINISHED = true;
+                    if (MAIN_HOUSES_FETCH_FINISHED && MAIN_BOOKS_FETCH_FINISHED){
+                        updateUi(mActiveCharacterList, R.layout.action_bar_browse);
+                    }
                 }
             };
-
             charactersTask.execute();
         }
         if (i == MAIN_CHARACTERS_LOADER) {
+            mProgress.setVisibility(View.GONE);
+            mProgressText.setVisibility(View.GONE);
+            mErrorText.setVisibility(View.GONE);
             //load chars from sql table into application lists
-
             //Define a projection that specifies the columns from the table we care about.
             String[] projection = {
                     CharacterEntry._ID,
@@ -230,7 +245,6 @@ public class MainListActivity extends AppCompatActivity implements
                     CharacterEntry.COLUMN_CHARACTER_NAME,
                     CharacterEntry.COLUMN_CHARACTER_URL,
             };
-
             // This loader will execute the ContentProvider's query method on a background thread
             return new android.content.CursorLoader(this,   // Parent activity context
                     CharacterEntry.CONTENT_URI,   // Provider content URI to query
@@ -240,26 +254,32 @@ public class MainListActivity extends AppCompatActivity implements
                     null);                  // Default sort order
         }
         if (i == MAIN_HOUSES_FETCH) {
+
             //fetch houses from api and put them into sql dB and lists
             AOIAFHousesAsyncTask houseTask = new AOIAFHousesAsyncTask(this) {
                 @Override
                 public void onResponseReceived(ArrayList<HashMap<String, String>> result) {
                     mUrlToHouseNamesDictionary = result.get(0);
                     mHouseUrlToRegionDictionary = result.get(1);
+
+                    MAIN_HOUSES_FETCH_FINISHED = true;
+                    if (MAIN_CHARACTERS_FETCH_FINISHED && MAIN_BOOKS_FETCH_FINISHED){
+                        Collection<ASOIAFCharacter> charColleciton = mMasterUrlToCharacterDictionary.values();
+                        mActiveCharacterList = new ArrayList<ASOIAFCharacter>(charColleciton);
+                        updateUi(mActiveCharacterList, R.layout.action_bar_browse);
+                    }
                 }
             };
             houseTask.execute();
         }
         if (i == MAIN_HOUSES_LOADER) {
             //load houses from sql table into application lists
-
             String[] projection = {
                     HousesEntry._ID,
                     HousesEntry.COLUMN_HOUSE_NAME,
                     HousesEntry.COLUMN_HOUSE_REGION,
                     HousesEntry.COLUMN_HOUSE_URL
             };
-
             return new android.content.CursorLoader(this, HousesEntry.CONTENT_URI, projection, null, null, null);
         }
         if (i == MAIN_BOOKS_FETCH) {
@@ -269,17 +289,12 @@ public class MainListActivity extends AppCompatActivity implements
                 public void onResponseReceived(HashMap<String, String> result) {
                     mUrlToBookNamesDictionary = result;
 
-                    mProgress = (ProgressBar) findViewById(R.id.main_progress);
-                    mProgressText = (TextView) findViewById(R.id.main_loading_text);
-
-                    mProgress.setVisibility(View.GONE);
-                    mProgressText.setVisibility(View.GONE);
-
-                    Collection<ASOIAFCharacter> charColleciton = mMasterUrlToCharacterDictionary.values();
-                    mActiveCharacterList = new ArrayList<ASOIAFCharacter>(charColleciton);
-
-                    updateUi(mActiveCharacterList, R.layout.action_bar_browse);
-
+                    MAIN_BOOKS_FETCH_FINISHED = true;
+                    if (MAIN_CHARACTERS_FETCH_FINISHED && MAIN_HOUSES_FETCH_FINISHED){
+                        Collection<ASOIAFCharacter> charColleciton = mMasterUrlToCharacterDictionary.values();
+                        mActiveCharacterList = new ArrayList<ASOIAFCharacter>(charColleciton);
+                        updateUi(mActiveCharacterList, R.layout.action_bar_browse);
+                    }
                 }
             };
             booksTask.execute();
@@ -291,7 +306,6 @@ public class MainListActivity extends AppCompatActivity implements
                     BooksEntry.COLUMN_BOOK_NAME,
                     BooksEntry.COLUMN_BOOK_URL
             };
-
             return new android.content.CursorLoader(this, BooksEntry.CONTENT_URI, projection, null, null, null);
         }
         return null;
@@ -302,15 +316,9 @@ public class MainListActivity extends AppCompatActivity implements
         if (loader.getId() == MAIN_CHARACTERS_LOADER) {
             //load chars from sql table into application lists
 
-            if (mMasterUrlToCharacterDictionary == null){
-                mMasterUrlToCharacterDictionary = new HashMap<>();
-                mUrlToCharacterNameDictionary = new HashMap<>();
-                mActiveCharacterList = new ArrayList<>();
-            }
-
-            mMasterUrlToCharacterDictionary.clear();
-            mUrlToCharacterNameDictionary.clear();
-            mActiveCharacterList.clear();
+            mMasterUrlToCharacterDictionary = new HashMap<>();
+            mUrlToCharacterNameDictionary = new HashMap<>();
+            mActiveCharacterList = new ArrayList<>();
 
             if (data == null){
                 return;
@@ -319,8 +327,6 @@ public class MainListActivity extends AppCompatActivity implements
             if (data.getCount() == 0){
                 return;
             }
-
-
 
             int characterUrlIndex = data.getColumnIndex(CharacterEntry.COLUMN_CHARACTER_URL);
             int characterNameIndex = data.getColumnIndex(CharacterEntry.COLUMN_CHARACTER_NAME);
@@ -360,19 +366,13 @@ public class MainListActivity extends AppCompatActivity implements
                 data.moveToNext();
 
             }
-
-
-
             Collection<ASOIAFCharacter> charColleciton = mMasterUrlToCharacterDictionary.values();
             ArrayList<ASOIAFCharacter> charList = new ArrayList<ASOIAFCharacter>(charColleciton);
             mActiveCharacterList = charList;
-
-
+            MAIN_CHARACTERS_LOADER_FINISHED = true;
         }
         else if (loader.getId() == MAIN_HOUSES_LOADER) {
             //load houses from sql table into application lists
-
-
             if (mUrlToHouseNamesDictionary == null){
                 mUrlToHouseNamesDictionary = new HashMap<>();
             }
@@ -401,22 +401,17 @@ public class MainListActivity extends AppCompatActivity implements
                 mHouseUrlToRegionDictionary.put(data.getString(houseUrlIndex), data.getString(houseRegionIndex));
                 data.moveToNext();
             }
-
-
+            MAIN_HOUSES_LOADER_FINISHED = true;
         }
         else if (loader.getId() == MAIN_BOOKS_LOADER) {
             //load books from sql table into application lists
-
             mUrlToBookNamesDictionary.clear();
-
             if (data == null){
                 return;
             }
-
             if (data.getCount() == 0){
                 return;
             }
-
             int bookUrlIndex = data.getColumnIndex(BooksEntry.COLUMN_BOOK_URL);
             int bookNameIndex = data.getColumnIndex(BooksEntry.COLUMN_BOOK_NAME);
 
@@ -425,21 +420,18 @@ public class MainListActivity extends AppCompatActivity implements
                 mUrlToBookNamesDictionary.put(data.getString(bookUrlIndex), data.getString(bookNameIndex));
                 data.moveToNext();
             }
-
-            Log.e(LOG_TAG, "can you see this?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-            mProgress.setVisibility(View.GONE);
-            mProgressText.setVisibility(View.GONE);
-            updateUi(mActiveCharacterList, R.layout.action_bar_browse);
-        } else{
+            MAIN_BOOKS_LOADER_FINISHED = true;
+        }
+        if (MAIN_CHARACTERS_LOADER_FINISHED && MAIN_HOUSES_LOADER_FINISHED && MAIN_BOOKS_LOADER_FINISHED){
+            MAIN_CHARACTERS_LOADER_FINISHED = false;
+            MAIN_HOUSES_LOADER_FINISHED = false;
+            MAIN_BOOKS_LOADER_FINISHED = false;
             updateUi(mActiveCharacterList, R.layout.action_bar_browse);
         }
-
     }
 
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
-
     }
 
     private ArrayList<String> characterStringToList(String characterAttribute){
@@ -490,6 +482,7 @@ public class MainListActivity extends AppCompatActivity implements
 
             startActivity(characterIntent);
         }
+
     }
 
     /**
@@ -555,39 +548,39 @@ public class MainListActivity extends AppCompatActivity implements
         @Override
         public void onClick(View view) {
 
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int i) {
-                    switch (i) {
-                        case DialogInterface.BUTTON_POSITIVE:
+            DialogInterface.OnClickListener dialogClickListener = (dialog, i) -> {
+                switch (i) {
+                    case DialogInterface.BUTTON_POSITIVE:
 
-                            mBanner.setVisibility(View.GONE);
-                            mMainListView.setVisibility(View.GONE);
-                            mProgress = (ProgressBar) findViewById(R.id.main_progress);
-                            mProgressText = (TextView) findViewById(R.id.main_loading_text);
-                            mProgress.setVisibility(View.VISIBLE);
-                            mProgressText.setVisibility(View.VISIBLE);
-                            mProgress.setMax(TOTAL_BOOKS + TOTAL_CHARACTERS + TOTAL_HOUSES);
-                            mProgress.setProgress(0);
+                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                        final SharedPreferences.Editor editor = sharedPref.edit();
 
+                        editor.putBoolean("Resync Characters", true);
+                        editor.apply();
 
-                            getLoaderManager().initLoader(MAIN_CHARACTERS_FETCH, null, MainListActivity.this);
-                            getLoaderManager().initLoader(MAIN_HOUSES_FETCH, null, MainListActivity.this);
-                            getLoaderManager().initLoader(MAIN_BOOKS_FETCH, null, MainListActivity.this);
+                        mMasterUrlToCharacterDictionary = null;
 
-                            dialog.dismiss();
-                            break;
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            dialog.dismiss();
-                            break;
-                    }
+                        Intent mainIntent = new Intent(getApplicationContext(), MainListActivity.class);
+                        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        mainIntent.setAction(Intent.ACTION_MAIN);
+
+                        startActivity(mainIntent);
+
+                        dialog.dismiss();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
                 }
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainListActivity.this, R.style.myDialog));
             builder.setMessage("Would you like to re-sync list of characters?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
         }
+
     }
+
+
 
 }
 

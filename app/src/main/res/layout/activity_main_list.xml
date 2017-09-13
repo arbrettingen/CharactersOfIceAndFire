@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/margin_medium"
         android:text="@string/LoadingCharacters"
         android:textAlignment="center"
-        android:textSize="@dimen/textsize_large" />
+        android:textSize="@dimen/textsize_large"/>
 
     <ImageView
         android:id="@+id/main_list_banner"
@@ -45,8 +45,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingTop="@dimen/margin_large"
-        android:text="@string/ExampleText"
+        android:padding="@dimen/margin_medium"
+        android:text="@string/StorageError"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/textsize_large"
         android:visibility="gone"

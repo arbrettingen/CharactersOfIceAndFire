@@ -1,6 +1,8 @@
 package com.arbrettingen.charactersoficeandfire;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +60,13 @@ public class CharacterDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_character_detail);
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putBoolean("First Launch", false);
+        editor.putBoolean("Resync Characters", false);
+        editor.apply();
 
         Intent thisIntent = getIntent();
 
@@ -313,4 +322,15 @@ public class CharacterDetailActivity extends AppCompatActivity {
         return AOIAF_BOOK_REQUEST_URL + ret;
     }
 
+    @Override
+    public void onBackPressed() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("First Launch", false);
+        editor.putBoolean("Resync Characters", false);
+        editor.putBoolean("Back Pressed", true);
+        editor.apply();
+        Intent i = new Intent(getApplicationContext(), MainListActivity.class);
+        startActivity(i);
+    }
 }

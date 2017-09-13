@@ -18,5 +18,7 @@
     <string name="TVSeasons">TV Seasons Appeared In:</string>
     <string name="PlayedBy">Portrayed By:</string>
     <string name="LoadingCharacters">Loading Characters . . .</string>
+    <string name="StorageError">Problem loading characters from internal storage. Consider clearing
+        stored application data or resyncing with online database.</string>
 
 </resources>
