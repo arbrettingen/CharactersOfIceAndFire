@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
+//todo upload to store
 
 /**
  * MainListActivity.java
@@ -106,7 +107,6 @@ public class MainListActivity extends AppCompatActivity implements
      */
     private HashMap<String, String> mHouseUrlToRegionDictionary;
 
-    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
